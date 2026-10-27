@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViraClip - El Directorio Definitivo de Herramientas para TikTok y Reels</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            900: '#701a75',
+                            950: '#4a044e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-brand-500 selection:text-white bg-grid-pattern min-h-screen flex flex-col justify-between">
+
+    <!-- Notificación emergente flotante (Toast) -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-32 opacity-0 transition-all duration-300 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3">
+        <div id="toast-icon" class="text-emerald-400 text-xl font-bold">✓</div>
+        <div>
+            <h4 id="toast-title" class="font-bold text-sm text-white">¡Éxito!</h4>
+            <p id="toast-msg" class="text-xs text-slate-400">Mensaje de prueba</p>
+        </div>
+    </div>
+
+    <!-- MODAL DE LECTURA DE ARTÍCULOS (AMPLIADO) -->
+    <div id="modal-articulo" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-2xl w-full mx-4 relative shadow-2xl max-h-[85vh] overflow-y-auto">
+            <button onclick="cerrarModales()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-bold">✕</button>
+            <div class="space-y-4">
+                <div class="flex items-center space-x-2">
+                    <span id="modalArticuloCat" class="text-xs font-bold text-brand-400 uppercase tracking-wider bg-brand-500/10 px-3 py-1 rounded-full border border-brand-500/20">Categoría</span>
+                    <span id="modalArticuloTiempo" class="text-xs text-slate-400">8 Min de lectura</span>
+                </div>
+                <h2 id="modalArticuloTitulo" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Título del artículo</h2>
+                <div id="modalArticuloCuerpo" class="text-slate-300 text-sm leading-relaxed space-y-4 pt-2 border-t border-slate-800"></div>
+                <div class="pt-6 border-t border-slate-800 flex justify-end">
+                    <button onclick="cerrarModales()" class="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl text-xs transition-all shadow-lg">Cerrar Guía</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE TEXTOS LEGALES (PRIVACIDAD, TÉRMINOS, AFILIADOS) -->
+    <div id="modal-legal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-2xl w-full mx-4 relative shadow-2xl max-h-[85vh] overflow-y-auto">
+            <button onclick="cerrarModales()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-bold">✕</button>
+            <div class="space-y-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-bold text-brand-400 uppercase tracking-wider bg-brand-500/10 px-3 py-1 rounded-full border border-brand-500/20">Información Legal</span>
+                </div>
+                <h2 id="modalLegalTitulo" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Título Legal</h2>
+                <div id="modalLegalCuerpo" class="text-slate-300 text-sm leading-relaxed space-y-4 pt-2 border-t border-slate-800"></div>
+                <div class="pt-6 border-t border-slate-800 flex justify-end">
+                    <button onclick="cerrarModales()" class="px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl text-xs transition-all shadow-lg">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE INICIO DE SESIÓN -->
+    <div id="modal-login" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full mx-4 relative shadow-2xl">
+            <button onclick="cerrarModales()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-bold">✕</button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-brand-600/20 text-brand-400 flex items-center justify-center mx-auto mb-3 font-bold text-xl border border-brand-500/30">🔐</div>
+                <h3 class="text-xl font-bold text-white">Iniciar Sesión</h3>
+                <p class="text-xs text-slate-400 mt-1">Accede a tu cuenta para reclamar la oferta</p>
+            </div>
+            <form onsubmit="manejarLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Correo electrónico</label>
+                    <input type="email" id="loginEmail" required class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500" placeholder="tucorreo@email.com">
+                </div>
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-xs font-semibold text-slate-300">Contraseña</label>
+                        <button type="button" onclick="abrirRecuperarPassword()" class="text-[11px] text-brand-400 hover:underline">¿Olvidaste tu contraseña?</button>
+                    </div>
+                    <input type="password" id="loginPassword" required class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500" placeholder="••••••••">
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-brand-600/30">Entrar a mi Cuenta</button>
+            </form>
+            <div class="mt-6 pt-5 border-t border-slate-800 text-center">
+                <p class="text-xs text-slate-400">¿No tienes cuenta todavía?</p>
+                <button type="button" onclick="abrirRegistro()" class="mt-2 text-xs font-bold text-brand-400 hover:text-brand-300 underline transition-colors">Regístrate aquí gratis</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE RECUPERACIÓN DE CONTRASEÑA -->
+    <div id="modal-recuperar" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full mx-4 relative shadow-2xl">
+            <button onclick="cerrarModales()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-bold">✕</button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-3 font-bold text-xl border border-amber-500/30">✉️</div>
+                <h3 class="text-xl font-bold text-white">Recuperar Contraseña</h3>
+                <p class="text-xs text-slate-400 mt-1">Te enviaremos un enlace seguro para restablecerla</p>
+            </div>
+            <form onsubmit="enviarCorreoRecuperacion(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Correo electrónico registrado</label>
+                    <input type="email" id="recuperarEmail" required class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500" placeholder="tucorreo@email.com">
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-amber-600/30">Enviar Enlace de Recuperación</button>
+                <div class="text-center pt-2">
+                    <button type="button" onclick="abrirLogin()" class="text-xs text-slate-400 hover:text-white">← Volver al inicio de sesión</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE REGISTRO AMPLIADO -->
+    <div id="modal-registro" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-lg w-full mx-4 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModales()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-bold">✕</button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-purple-600/20 text-purple-400 flex items-center justify-center mx-auto mb-3 font-bold text-xl border border-purple-500/30">✨</div>
+                <h3 class="text-xl font-bold text-white">Crea tu Cuenta en ViraClip</h3>
+                <p class="text-xs text-slate-400 mt-1">Completa tus datos para personalizar tu experiencia</p>
+            </div>
+            <form onsubmit="manejarRegistro(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nombre completo</label>
+                        <input type="text" id="regNombre" required class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500" placeholder="Tu nombre">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">DNI / NIF</label>
+                        <input type="text" id="regDni" required class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500" placeholder="12345678X">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Correo electrónico</label>
+                    <input type="email" id="regEmail" required class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500" placeholder="tucorreo@email.com">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">País</label>
+                        <select id="regPais" onchange="actualizarComunidades()" class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500">
+                            <optgroup label="Hispanoamérica">
+                                <option value="ES">España</option>
+                                <option value="MX">México</option>
+                                <option value="AR">Argentina</option>
+                                <option value="CO">Colombia</option>
+                                <option value="CL">Chile</option>
+                                <option value="PE">Perú</option>
+                            </optgroup>
+                            <optgroup label="Europa (Streamers & Top Influencers)">
+                                <option value="UK">Reino Unido</option>
+                                <option value="FR">Francia</option>
+                                <option value="DE">Alemania</option>
+                                <option value="IT">Italia</option>
+                                <option value="PT">Portugal</option>
+                            </optgroup>
+                            <optgroup label="Otros">
+                                <option value="US">Estados Unidos</option>
+                                <option value="otro">Otro país</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div>
+                        <label id="labelComunidad" class="block text-xs font-semibold text-slate-300 mb-1.5">Comunidad / Región</label>
+                        <select id="regComunidad" class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500"></select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Contraseña</label>
+                    <input type="password" id="regPassword" required class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500" placeholder="Mínimo 6 caracteres">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tipo de contenido principal</label>
+                    <select id="regNicho" class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500">
+                        <option value="gaming">Gaming / Directos de Twitch</option>
+                        <option value="podcasts">Podcasts / Entrevistas</option>
+                        <option value="educativo">Educativo / Finanzas / Motivación</option>
+                        <option value="agencia">Agencia / Múltiples cuentas</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-brand-600/30">Registrarse y Obtener Clips Gratis</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE PAGO -->
+    <div id="modal-pago" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden">
+        <div class="bg-slate-900 border border-brand-500/50 rounded-3xl p-8 max-w-md w-full mx-4 relative shadow-2xl">
+            <button onclick="cerrarModales()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg font-bold">✕</button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-3 font-bold text-xl border border-emerald-500/30">💳</div>
+                <h3 id="pagoTituloPlan" class="text-xl font-bold text-white">Suscribirse al Plan</h3>
+                <p id="pagoPrecioPlan" class="text-sm text-brand-400 font-bold mt-1">$29 / mes</p>
+            </div>
+            <form onsubmit="completarPago(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nombre en la tarjeta</label>
+                    <input type="text" required class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500" placeholder="Ej. Juan Pérez">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Número de tarjeta</label>
+                    <input type="text" required maxlength="19" class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500 font-mono" placeholder="4242 •••• •••• 4242">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Caducidad</label>
+                        <input type="text" required maxlength="5" class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500 font-mono" placeholder="MM/AA">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">CVV</label>
+                        <input type="password" required maxlength="4" class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-brand-500 font-mono" placeholder="123">
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-emerald-600/30">Pagar y Activar Suscripción</button>
+                <p class="text-[10px] text-center text-slate-500">🔒 Pago 100% seguro cifrado por Stripe.</p>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <!-- Barra de Navegación Estética -->
+        <header class="sticky top-0 z-40 backdrop-blur-xl bg-slate-950/70 border-b border-slate-800/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                <a href="#" class="flex items-center space-x-3 group">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 via-purple-600 to-pink-400 flex items-center justify-center shadow-lg shadow-brand-500/30 group-hover:scale-105 transition-transform">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    </div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-pink-100 to-purple-300 bg-clip-text text-transparent">ViraClip <span class="text-brand-500">IA</span></span>
+                </a>
+
+                <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-400">
+                    <a href="#generador" class="hover:text-white transition-colors text-brand-400 font-semibold">Generador IA</a>
+                    <a href="#planes" class="hover:text-white transition-colors">Planes</a>
+                    <a href="#herramientas" class="hover:text-white transition-colors">Herramientas</a>
+                    <a href="#recursos" class="hover:text-white transition-colors">Guías</a>
+                    <a href="#contacto" class="hover:text-white transition-colors">Contacto</a>
+                </nav>
+
+                <div class="flex items-center space-x-3">
+                    <button onclick="abrirLogin()" class="hidden sm:inline-flex items-center justify-center px-4 py-2.5 text-xs font-semibold text-slate-300 hover:text-white transition-colors">Iniciar Sesión</button>
+                    <button onclick="abrirRegistro()" class="inline-flex items-center justify-center px-5 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 rounded-xl shadow-lg shadow-brand-600/25 transition-all transform hover:-translate-y-0.5">Registrarse</button>
+                    <button id="menu-btn" class="md:hidden p-2 text-slate-400 hover:text-white focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="mobile-menu" class="hidden md:hidden bg-slate-900/95 backdrop-blur-xl border-b border-slate-800 px-6 py-4 space-y-3">
+                <a href="#generador" class="block py-2 text-brand-400 font-medium">Generador IA</a>
+                <a href="#planes" class="block py-2 text-slate-300 hover:text-brand-400 font-medium">Planes</a>
+                <a href="#herramientas" class="block py-2 text-slate-300 hover:text-brand-400 font-medium">Herramientas</a>
+                <a href="#recursos" class="block py-2 text-slate-300 hover:text-brand-400 font-medium">Guías</a>
+                <a href="#contacto" class="block py-2 text-slate-300 hover:text-brand-400 font-medium">Contacto</a>
+                <div class="pt-4 border-t border-slate-800 flex flex-col gap-2">
+                    <button onclick="abrirLogin()" class="w-full py-2.5 bg-slate-800 text-white rounded-xl text-xs font-semibold">Iniciar Sesión</button>
+                    <button onclick="abrirRegistro()" class="w-full py-2.5 bg-brand-600 text-white rounded-xl text-xs font-bold">Registrarse</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- SECCIÓN HERO CON GENERADOR -->
+        <section id="generador" class="relative overflow-hidden pt-6 pb-16 lg:pt-10 lg:pb-20">
+            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+            <div class="absolute top-1/3 left-1/4 w-72 h-72 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+            
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center max-w-3xl mx-auto space-y-3 mb-6">
+                    <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold tracking-wide uppercase backdrop-blur-md">
+                        <span class="w-2 h-2 rounded-full bg-brand-500 animate-ping"></span>
+                        <span>Plataforma #1 para Creadores de Contenido Short</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-[1.1]">
+                        Crea <span class="bg-gradient-to-r from-brand-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">Clips Virales</span> con IA al Instante
+                    </h1>
+                    <p class="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal max-w-xl mx-auto">Pega tu enlace abajo y deja que nuestra IA extraiga los mejores momentos optimizados para TikTok y Reels.</p>
+                </div>
+
+                <div class="bg-gradient-to-b from-slate-900/90 to-slate-950 border-2 border-brand-500/50 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+                    <!-- Insignia y selector de plan integrado dentro de la tarjeta sin tapar nada -->
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-slate-950/60 border border-brand-500/20 p-3.5 rounded-2xl mb-6 gap-3">
+                        <div>
+                            <span class="text-[10px] font-extrabold text-brand-400 uppercase tracking-wider block">Plan Actual:</span>
+                            <span id="badgePlanActual" class="text-white font-bold text-xs underline">Gratuito (Máx 5/día)</span>
+                        </div>
+                        <div class="flex items-center space-x-2 w-full sm:w-auto">
+                            <label class="text-[11px] text-slate-300 whitespace-nowrap font-medium">Cambiar Plan (Test):</label>
+                            <select id="simuladorPlan" onchange="cambiarPlanSimulado(this.value)" class="bg-slate-900 text-white text-xs border border-slate-700 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500 w-full sm:w-auto">
+                                <option value="gratis">Gratuito (Máx 5/día)</option>
+                                <option value="standard">Starter Standard (Hasta 30 Clips)</option>
+                                <option value="pro">Viral Pro (Ilimitados)</option>
+                                <option value="agency">Agency Multi-cuenta (Máster Lote)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+                        <div id="contadorRestantes" class="inline-block bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-xs text-brand-300 font-semibold">
+                            🎁 Clips disponibles hoy (Se resetea a las 00:00h): <span id="clipsDisponibles" class="font-bold text-white">5</span> / 5
+                        </div>
+                    </div>
+
+                    <form onsubmit="procesarDirectoAI(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-2">Enlace del Directo (YouTube / Twitch / Vídeo Largo)</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-500">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                </span>
+                                <input type="url" id="urlDirecto" placeholder="https://www.youtube.com/watch?v=TU_DIRECTO_LARGO" required class="w-full pl-12 pr-4 py-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-white placeholder-slate-600 text-sm focus:outline-none focus:border-brand-500 shadow-inner">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-2">Cantidad de Clips a Generar (Según tu plan)</label>
+                                <select id="cantidadClips" onchange="verificarSeleccionClips(this)" class="w-full px-4.5 py-3 bg-slate-950 border border-slate-800 rounded-2xl text-white text-sm focus:outline-none focus:border-brand-500 shadow-inner"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-2">Estilo de Subtítulos</label>
+                                <select id="estiloSubtitulos" class="w-full px-4.5 py-3 bg-slate-950 border border-slate-800 rounded-2xl text-white text-sm focus:outline-none focus:border-brand-500 shadow-inner">
+                                    <option value="hormozi">Estilo Hormozi (Dinámico con Emojis)</option>
+                                    <option value="neon">Neón Brillante (Efecto Gaming)</option>
+                                    <option value="minimalista">Minimalista Elegante</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-brand-600 via-purple-600 to-pink-600 hover:from-brand-500 hover:to-pink-500 text-white font-bold rounded-2xl text-sm transition-all shadow-xl shadow-brand-600/30 transform hover:-translate-y-0.5">🚀 Analizar Directo y Generar Clips Virales</button>
+                    </form>
+
+                    <div id="resultadoGenerador" class="hidden mt-6 p-5 bg-slate-950/80 border border-brand-500/30 rounded-2xl space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-white text-sm flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                <span id="tituloResultado">¡Directo procesado con éxito!</span>
+                            </h3>
+                            <span id="badgeClipsCount" class="text-xs text-brand-400 font-semibold bg-brand-500/10 px-3 py-1 rounded-full">Clips Listos</span>
+                        </div>
+                        <p class="text-xs text-slate-400">La IA ha recortado los mejores fragmentos con puntuación de viralidad superior al 90%. Puedes descargarlos o abrirlos directamente:</p>
+                        <div id="listaClipsGenerados" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PLANES -->
+        <section id="planes" class="py-24 relative bg-slate-900/30 border-t border-slate-800/50 backdrop-blur-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+                    <span class="px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-bold uppercase tracking-widest">Planes y Promociones</span>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Invierte en tu crecimiento con descuento</h2>
+                    <p class="text-slate-400 text-sm sm:text-base">Elige tu periodicidad y aprovecha las promociones especiales en los planes de 3 meses (-15%) y 1 año (-30%).</p>
+                    
+                    <div class="inline-flex flex-wrap justify-center items-center bg-slate-900/90 border border-slate-800 p-2 rounded-2xl mt-6 shadow-xl gap-1">
+                        <button onclick="cambiarPeriodo('1mes')" id="btn-1mes" class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-brand-600 to-purple-600 text-white shadow-lg">1 Mes</button>
+                        <button onclick="cambiarPeriodo('3meses')" id="btn-3meses" class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white">3 Meses <span class="text-amber-400 text-[10px] ml-1 font-extrabold">(-15% OFERTA)</span></button>
+                        <button onclick="cambiarPeriodo('1ano')" id="btn-1ano" class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white">1 Año <span class="text-emerald-400 text-[10px] ml-1 font-extrabold">(-30% AHORRO)</span></button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
+                    <!-- Plan 1 -->
+                    <div id="tarjeta-1" onclick="seleccionarTarjetaPlan(1)" class="plan-card cursor-pointer bg-gradient-to-b from-slate-900/90 via-slate-900/80 to-slate-950 backdrop-blur-xl border-2 border-slate-700/80 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 shadow-2xl relative group">
+                        <div id="badge-1" class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-slate-800 text-slate-300 text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-full shadow-lg tracking-wider transition-all">📦 Plan Estándar</div>
+                        <div>
+                            <div class="flex items-center justify-between mb-4 mt-2">
+                                <h3 class="font-bold text-white text-xl">Starter Standard</h3>
+                                <span class="text-xs font-semibold px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700/50">Hasta 30 Clips</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-6 leading-relaxed">Ideal para creadores constantes que necesitan hasta 30 clips optimizados al mes.</p>
+                            <div class="mb-6">
+                                <span class="text-5xl font-black text-white precio-starter">$15</span>
+                                <span class="text-xs text-slate-400 periodo-texto font-medium"> / mes</span>
+                                <div id="promo-aviso-starter" class="text-[11px] text-emerald-400 font-semibold mt-1.5 hidden">✨ ¡Aplicado descuento promocional!</div>
+                            </div>
+                            <ul class="space-y-3.5 text-sm text-slate-300 border-t border-slate-800/80 pt-6">
+                                <li class="flex items-center space-x-3"><span class="text-brand-400">✓</span> <span><strong>Hasta 30 clips</strong> de procesamiento</span></li>
+                                <li class="flex items-center space-x-3"><span class="text-brand-400">✓</span> <span>Tutoriales de subtítulos dinámicos</span></li>
+                                <li class="flex items-center space-x-3"><span class="text-brand-400">✓</span> <span>Soporte por comunidad</span></li>
+                            </ul>
+                        </div>
+                        <div class="pt-8">
+                            <button type="button" onclick="event.stopPropagation(); seleccionarPlan('Starter Standard', 1);" id="btn-card-1" class="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-2xl text-xs transition-all shadow-lg border border-slate-700/50">Obtener Plan Standard</button>
+                        </div>
+                    </div>
+
+                    <!-- Plan 2 -->
+                    <div id="tarjeta-2" onclick="seleccionarTarjetaPlan(2)" class="plan-card cursor-pointer bg-gradient-to-b from-purple-950/40 via-slate-900/80 to-slate-900/90 backdrop-blur-xl border-2 border-brand-500/80 rounded-3xl p-8 flex flex-col justify-between shadow-2xl relative transform md:-translate-y-4 group transition-all">
+                        <div id="badge-2" class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-brand-600 to-pink-500 text-white text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-full shadow-lg tracking-wider transition-all">🔥 Más Popular • Activo</div>
+                        <div>
+                            <div class="flex items-center justify-between mb-4 mt-2">
+                                <h3 class="font-bold text-white text-xl">Viral Pro (Ilimitado)</h3>
+                                <span class="text-xs font-semibold px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">Sin Límites</span>
+                            </div>
+                            <p class="text-xs text-slate-300 mb-6 leading-relaxed">Para creadores que exigen al máximo el algoritmo con generación de clips 100% ilimitada.</p>
+                            <div class="mb-6">
+                                <span class="text-5xl font-black text-white precio-pro">$29</span>
+                                <span class="text-xs text-brand-300 periodo-texto font-medium"> / mes</span>
+                                <div class="text-[11px] text-emerald-400 font-bold mt-1.5">🚀 ¡Clips ilimitados + checklist viral!</div>
+                            </div>
+                            <ul class="space-y-3.5 text-sm text-slate-200 border-t border-brand-500/30 pt-6">
+                                <li class="flex items-center space-x-3"><span class="text-brand-400">✓</span> <span><strong>Clips 100% ilimitados</strong></span></li>
+                                <li class="flex items-center space-x-3"><span class="text-brand-400">✓</span> <span>Directorio completo de IAs de vídeo</span></li>
+                                <li class="flex items-center space-x-3"><span class="text-brand-400">✓</span> <span>Acceso prioritario a apps de autoshorts</span></li>
+                                <li class="flex items-center space-x-3"><span class="text-brand-400">✓</span> <span>Soporte prioritario por email</span></li>
+                            </ul>
+                        </div>
+                        <div class="pt-8">
+                            <button type="button" onclick="event.stopPropagation(); seleccionarPlan('Viral Pro', 2);" id="btn-card-2" class="w-full py-4 bg-gradient-to-r from-brand-600 to-pink-600 hover:from-brand-500 hover:to-pink-500 text-white font-bold rounded-2xl text-xs transition-all shadow-xl shadow-brand-600/40">Obtener Plan Pro</button>
+                        </div>
+                    </div>
+
+                    <!-- Plan 3 -->
+                    <div id="tarjeta-3" onclick="seleccionarTarjetaPlan(3)" class="plan-card cursor-pointer bg-gradient-to-b from-slate-900/90 via-slate-900/80 to-slate-950 backdrop-blur-xl border-2 border-slate-700/80 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 shadow-2xl relative group">
+                        <div id="badge-3" class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-slate-800 text-slate-300 text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-full shadow-lg tracking-wider transition-all">👑 Plan Agencias</div>
+                        <div>
+                            <div class="flex items-center justify-between mb-4 mt-2">
+                                <h3 class="font-bold text-white text-xl">Agency Multi-cuenta</h3>
+                                <span class="text-xs font-semibold px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700/50">Agencias</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mb-6 leading-relaxed">Ideal para gestionar múltiples cuentas de clientes o redes de páginas temáticas.</p>
+                            <div class="mb-6">
+                                <span class="text-5xl font-black text-white precio-agency">$79</span>
+                                <span class="text-xs text-slate-400 periodo-texto font-medium"> / mes</span>
+                                <div id="promo-aviso-agency" class="text-[11px] text-emerald-400 font-semibold mt-1.5">👑 ¡Ilimitados para equipos!</div>
+                            </div>
+                            <ul class="space-y-3.5 text-sm text-slate-300 border-t border-slate-800/80 pt-6">
+                                <li class="flex items-center space-x-3"><span class="text-brand-400">✓</span> <span>Clips ilimitados para clientes</span></li>
+                                <li class="flex items-center space-x-3"><span class="text-brand-400">✓</span> <span>Estrategias para cuentas ilimitadas</span></li>
+                                <li class="flex items-center space-x-3"><span class="text-brand-400">✓</span> <span>Soporte VIP 24/7 dedicado</span></li>
+                            </ul>
+                        </div>
+                        <div class="pt-8">
+                            <button type="button" onclick="event.stopPropagation(); seleccionarPlan('Agency Multi-cuenta', 3);" id="btn-card-3" class="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-2xl text-xs transition-all shadow-lg border border-slate-700/50">Obtener Plan Agency</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HERRAMIENTAS -->
+        <section id="herramientas" class="py-24 relative border-t border-slate-800/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-14">
+                    <div>
+                        <span class="text-brand-400 text-xs font-bold uppercase tracking-widest block mb-2">Software Validado</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">Herramientas Recomendadas (Afiliados)</h2>
+                        <p class="text-slate-400 text-sm">Las mejores IAs del mercado para recortar vídeos, editar y añadir subtítulos virales.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2.5 mt-6 md:mt-0" id="filter-container">
+                        <button onclick="filtrarCategoria('todos', this)" class="filter-btn px-4 py-2.5 rounded-xl text-xs font-semibold bg-brand-600 text-white transition-all shadow-md shadow-brand-600/20">Todas</button>
+                        <button onclick="filtrarCategoria('recorte', this)" class="filter-btn px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition-all">Recorte de Clips</button>
+                        <button onclick="filtrarCategoria('subtitulos', this)" class="filter-btn px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition-all">Subtítulos Dinámicos</button>
+                        <button onclick="filtrarCategoria('avatares', this)" class="filter-btn px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition-all">Avatares & Voz</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="cards-grid">
+                    <div class="card-item group bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-7 hover:border-brand-500/50 transition-all duration-300 flex flex-col justify-between shadow-2xl relative overflow-hidden" data-category="recorte">
+                        <div class="absolute top-0 right-0 bg-emerald-500/10 text-emerald-400 text-[10px] font-extrabold px-3.5 py-1.5 rounded-bl-2xl border-l border-b border-emerald-500/20">TOP VENTAS ⭐</div>
+                        <div>
+                            <div class="flex items-center space-x-4 mb-5">
+                                <div class="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 font-black text-2xl shadow-inner">O</div>
+                                <div>
+                                    <h3 class="font-bold text-white text-lg group-hover:text-brand-400 transition-colors">Opus Clip AI</h3>
+                                    <span class="text-xs text-slate-400 font-medium">Recorte automático de vídeos largos</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-6 leading-relaxed">Convierte un vídeo largo de YouTube en 10 clips virales para TikTok con un solo clic. Detecta los mejores momentos y añade puntuación viral.</p>
+                        </div>
+                        <div class="pt-5 border-t border-slate-800/80 flex items-center justify-end">
+                            <button onclick="abrirAfiliado('Opus Clip AI', 'https://www.opus.pro')" class="inline-flex items-center space-x-1.5 px-4 py-2.5 bg-brand-600/20 hover:bg-brand-600 text-brand-300 hover:text-white text-xs font-semibold rounded-xl transition-all border border-brand-500/30"><span>Probar App</span></button>
+                        </div>
+                    </div>
+
+                    <div class="card-item group bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-7 hover:border-brand-500/50 transition-all duration-300 flex flex-col justify-between shadow-2xl relative overflow-hidden" data-category="subtitulos">
+                        <div class="absolute top-0 right-0 bg-pink-500/10 text-pink-400 text-[10px] font-extrabold px-3.5 py-1.5 rounded-bl-2xl border-l border-b border-pink-500/20">VIRAL 🔥</div>
+                        <div>
+                            <div class="flex items-center space-x-4 mb-5">
+                                <div class="w-14 h-14 rounded-2xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400 font-black text-2xl shadow-inner">S</div>
+                                <div>
+                                    <h3 class="font-bold text-white text-lg group-hover:text-brand-400 transition-colors">Submagic AI</h3>
+                                    <span class="text-xs text-slate-400 font-medium">Subtítulos dinámicos estilo Alex Hormozi</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-6 leading-relaxed">Genera subtítulos animados palabra por palabra con emojis automáticos y efectos de texto que retienen la atención en TikTok al 100%.</p>
+                        </div>
+                        <div class="pt-5 border-t border-slate-800/80 flex items-center justify-end">
+                            <button onclick="abrirAfiliado('Submagic AI', 'https://submagic.co')" class="inline-flex items-center space-x-1.5 px-4 py-2.5 bg-brand-600/20 hover:bg-brand-600 text-brand-300 hover:text-white text-xs font-semibold rounded-xl transition-all border border-brand-500/30"><span>Probar App</span></button>
+                        </div>
+                    </div>
+
+                    <div class="card-item group bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-7 hover:border-brand-500/50 transition-all duration-300 flex flex-col justify-between shadow-2xl relative overflow-hidden" data-category="avatares">
+                        <div class="absolute top-0 right-0 bg-indigo-500/10 text-indigo-400 text-[10px] font-extrabold px-3.5 py-1.5 rounded-bl-2xl border-l border-b border-indigo-500/20">TENDENCIA 🚀</div>
+                        <div>
+                            <div class="flex items-center space-x-4 mb-5">
+                                <div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 font-black text-2xl shadow-inner">H</div>
+                                <div>
+                                    <h3 class="font-bold text-white text-lg group-hover:text-brand-400 transition-colors">HeyGen Video AI</h3>
+                                    <span class="text-xs text-slate-400 font-medium">Avatares parlantes y traducción</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-6 leading-relaxed">Crea vídeos virales sin mostrar tu cara utilizando avatares de IA hiperrealistas o clona tu voz para hablar en 20 idiomas diferentes.</p>
+                        </div>
+                        <div class="pt-5 border-t border-slate-800/80 flex items-center justify-end">
+                            <button onclick="abrirAfiliado('HeyGen Video AI', 'https://www.heygen.com')" class="inline-flex items-center space-x-1.5 px-4 py-2.5 bg-brand-600/20 hover:bg-brand-600 text-brand-300 hover:text-white text-xs font-semibold rounded-xl transition-all border border-brand-500/30"><span>Probar App</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Banner Afiliado -->
+        <section id="monetizacion" class="py-20 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-gradient-to-r from-purple-900/60 via-indigo-950/80 to-brand-950/70 backdrop-blur-2xl border border-brand-500/30 rounded-3xl p-8 sm:p-14 relative shadow-2xl overflow-hidden">
+                    <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-brand-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+                    <div class="max-w-2xl relative z-10 space-y-6">
+                        <span class="px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-wider">Patrocinado • Oferta Exclusiva Creadores</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Consigue 3 Horas de Procesamiento Gratis en Opus Clip</h2>
+                        <p class="text-slate-300 text-base leading-relaxed font-normal">¿Quieres empezar a recortar tus podcasts o vídeos de YouTube ahora mismo? Regístrate hoy desde nuestro enlace exclusivo y obtén horas de prueba gratuitas sin compromiso.</p>
+                        <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                            <button onclick="reclamarOfertaVIP()" class="px-8 py-4 bg-white text-slate-950 font-bold rounded-2xl hover:bg-slate-100 transition-all shadow-xl text-center transform hover:-translate-y-0.5">Reclamar 3 Horas Gratis</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOG -->
+        <section id="recursos" class="py-24 bg-slate-900/20 border-t border-slate-800/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16 space-y-3">
+                    <span class="text-brand-400 text-xs font-bold uppercase tracking-widest block">Recursos Gratuitos</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Guías para Hacerse Viral en TikTok</h2>
+                    <p class="text-slate-400 text-sm">Aprende los secretos del algoritmo para disparar las visualizaciones de tus clips cortos.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <article class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl overflow-hidden hover:border-slate-700 transition-all flex flex-col shadow-2xl group">
+                        <div class="overflow-hidden h-48"><img src="https://placehold.co/600x350/1e293b/d946ef?text=Ganchos+Virales" alt="Ganchos" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div>
+                        <div class="p-7 flex-1 flex flex-col justify-between">
+                            <div class="space-y-3">
+                                <span class="text-xs font-bold text-brand-400 uppercase tracking-wider">Estrategia</span>
+                                <h3 class="text-lg font-bold text-white hover:text-brand-400 transition-colors cursor-pointer leading-snug" onclick="abrirArticulo(1)">Los 5 mejores ganchos iniciales para retener al usuario en los primeros 3 segundos</h3>
+                                <p class="text-xs text-slate-400 leading-relaxed">Descubre qué frases y elementos visuales obligan a la gente a quedarse viendo tu TikTok completo.</p>
+                            </div>
+                            <div class="pt-6 mt-6 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-500 font-medium"><span>8 Min de lectura</span><span>Hace 2 días</span></div>
+                        </div>
+                    </article>
+
+                    <article class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl overflow-hidden hover:border-slate-700 transition-all flex flex-col shadow-2xl group">
+                        <div class="overflow-hidden h-48"><img src="https://placehold.co/600x350/1e293b/c026d3?text=Monetizar+TikTok" alt="Monetización" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div>
+                        <div class="p-7 flex-1 flex flex-col justify-between">
+                            <div class="space-y-3">
+                                <span class="text-xs font-bold text-brand-400 uppercase tracking-wider">Monetización</span>
+                                <h3 class="text-lg font-bold text-white hover:text-brand-400 transition-colors cursor-pointer leading-snug" onclick="abrirArticulo(2)">Cómo ganar dinero recomendando apps de edición con marketing de afiliados</h3>
+                                <p class="text-xs text-slate-400 leading-relaxed">Estrategia paso a paso para colocar enlaces de afiliado en la biografía de TikTok de forma efectiva.</p>
+                            </div>
+                            <div class="pt-6 mt-6 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-500 font-medium"><span>10 Min de lectura</span><span>Hace 4 días</span></div>
+                        </div>
+                    </article>
+
+                    <article class="bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl overflow-hidden hover:border-slate-700 transition-all flex flex-col shadow-2xl group">
+                        <div class="overflow-hidden h-48"><img src="https://placehold.co/600x350/1e293b/701a75?text=Cuentas+Faceless" alt="Faceless" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"></div>
+                        <div class="p-7 flex-1 flex flex-col justify-between">
+                            <div class="space-y-3">
+                                <span class="text-xs font-bold text-brand-400 uppercase tracking-wider">Automatización</span>
+                                <h3 class="text-lg font-bold text-white hover:text-brand-400 transition-colors cursor-pointer leading-snug" onclick="abrirArticulo(3)">Cómo montar un canal de TikTok "Faceless" (sin mostrar la cara) al 100% con IA</h3>
+                                <p class="text-xs text-slate-400 leading-relaxed">Guía técnica para automatizar la creación de vídeos diarios usando herramientas en la nube.</p>
+                            </div>
+                            <div class="pt-6 mt-6 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-500 font-medium"><span>12 Min de lectura</span><span>Hace 1 semana</span></div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter -->
+        <section id="newsletter" class="py-24 bg-slate-950 relative border-t border-slate-900">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+                <div class="w-14 h-14 bg-brand-600/20 text-brand-400 rounded-2xl border border-brand-500/30 flex items-center justify-center mx-auto text-2xl font-bold shadow-lg shadow-brand-600/20">✉</div>
+                <div class="space-y-3 max-w-xl mx-auto">
+                    <h2 class="text-3xl font-extrabold text-white tracking-tight">Recibe trucos virales y nuevas herramientas cada semana</h2>
+                    <p class="text-slate-400 text-sm">Únete a miles de creadores de contenido que reciben nuestros tips de crecimiento en TikTok y Reels.</p>
+                </div>
+                <form onsubmit="suscribirNewsletter(event)" class="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+                    <input type="email" id="emailInput" placeholder="Tu correo electrónico..." required class="flex-1 px-5 py-4 bg-slate-900 border border-slate-800 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 text-sm shadow-xl">
+                    <button type="submit" class="px-7 py-4 bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 text-white font-semibold rounded-2xl transition-all text-sm whitespace-nowrap shadow-xl shadow-brand-600/30">Suscribirme</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Contacto -->
+        <section id="contacto" class="py-20 bg-slate-900/40 border-t border-slate-800/80">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-10 space-y-2">
+                    <h2 class="text-2xl font-bold text-white">¿Tienes dudas o propuestas de colaboración?</h2>
+                    <p class="text-slate-400 text-sm">Escríbenos y te responderemos rápidamente.</p>
+                </div>
+                <form onsubmit="enviarContacto(event)" class="space-y-5 bg-slate-900/80 backdrop-blur-xl p-8 sm:p-10 border border-slate-800 rounded-3xl shadow-2xl">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Nombre</label>
+                            <input type="text" id="nombreContacto" required class="w-full px-4.5 py-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-white placeholder-slate-600 text-sm focus:outline-none focus:border-brand-500 shadow-inner" placeholder="Tu nombre">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Correo Electrónico</label>
+                            <input type="email" id="emailContacto" required class="w-full px-4.5 py-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-white placeholder-slate-600 text-sm focus:outline-none focus:border-brand-500 shadow-inner" placeholder="tucorreo@empresa.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5">Mensaje</label>
+                        <textarea id="mensajeContacto" rows="4" required class="w-full px-4.5 py-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-white placeholder-slate-600 text-sm focus:outline-none focus:border-brand-500 shadow-inner" placeholder="¿En qué te podemos ayudar?"></textarea>
+                    </div>
+                    <button type="submit" class="w-full py-4 bg-gradient-to-r from-brand-600 to-purple-600 hover:from-brand-500 hover:to-purple-500 text-white font-semibold rounded-2xl text-sm transition-all shadow-xl shadow-brand-600/30">Enviar Mensaje</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <!-- Pie de Página con Enlaces Legales Clickeables -->
+    <footer class="bg-slate-950 border-t border-slate-900 py-12 text-slate-500 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-7 h-7 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-xs shadow-md">VC</div>
+                <span class="font-bold text-slate-300 text-sm">ViraClip AI Directory</span>
+            </div>
+            <p>© 2026 ViraClip IA. Todos los derechos reservados. Enlaces con comisión de afiliado sin coste extra.</p>
+            <div class="flex space-x-6 text-slate-400 font-medium">
+                <button onclick="abrirLegal('privacidad')" class="hover:text-white transition-colors cursor-pointer">Privacidad</button>
+                <button onclick="abrirLegal('terminos')" class="hover:text-white transition-colors cursor-pointer">Términos</button>
+                <button onclick="abrirLegal('afiliados')" class="hover:text-white transition-colors cursor-pointer">Afiliados</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script de Interactividad -->
+    <script>
+        let periodoActual = '1mes';
+        let planUsuario = localStorage.getItem('planUsuario') || 'gratis'; 
+        let sesionIniciada = localStorage.getItem('sesionIniciada') === 'true'; 
+        const limiteDiarioGratis = 5;
+
+        function verificarReseteoDiario() {
+            const hoy = new Date().toDateString();
+            const ultimaFechaGuardada = localStorage.getItem('ultimaFechaReset');
+
+            if (ultimaFechaGuardada !== hoy) {
+                localStorage.setItem('clipsUsadosHoy', '0');
+                localStorage.setItem('ultimaFechaReset', hoy);
+            }
+        }
+
+        verificarReseteoDiario();
+        let clipsUsadosHoy = parseInt(localStorage.getItem('clipsUsadosHoy')) || 0;
+
+        // Base de datos para los textos legales del Footer
+        const legalDB = {
+            privacidad: {
+                titulo: "Política de Privacidad y Protección de Datos",
+                cuerpo: `
+                    <p><strong>1. Responsable del Tratamiento:</strong> ViraClip IA (en adelante, "la plataforma") se compromete a proteger la privacidad de sus usuarios de acuerdo con el Reglamento General de Protección de Datos (RGPD).</p>
+                    <p><strong>2. Datos que recopilamos:</strong> Recopilamos información básica de registro (nombre, correo electrónico, país) y datos de uso del servicio para personalizar la experiencia de generación de clips y control de límites diarios.</p>
+                    <p><strong>3. Finalidad del tratamiento:</strong> Gestionar las cuentas de usuario, procesar las suscripciones mediante pasarelas de pago seguras (Stripe) y enviar notificaciones técnicas o comerciales autorizadas.</p>
+                    <p><strong>4. Derechos del usuario:</strong> Tienes derecho a acceder, rectificar y suprimir tus datos personales enviando una solicitud desde nuestro formulario de contacto.</p>
+                `
+            },
+            terminos: {
+                titulo: "Términos y Condiciones de Uso",
+                cuerpo: `
+                    <p><strong>1. Aceptación de los Términos:</strong> Al registrarte y utilizar ViraClip IA, aceptas cumplir con los presentes términos y condiciones de servicio.</p>
+                    <p><strong>2. Uso del Servicio:</strong> El usuario se compromete a no utilizar las herramientas de IA para procesar contenidos ilegales, que infrinjan derechos de autor ajenos o que promuevan la violencia.</p>
+                    <p><strong>3. Planes y Suscripciones:</strong> Los planes de pago se renuevan de forma periódica (mensual, trimestral o anual) salvo cancelación previa por parte del usuario desde su panel de control.</p>
+                    <p><strong>4. Límites Diarios:</strong> Las cuentas gratuitas cuentan con un límite estricto de 5 clips diarios que se resetean automáticamente todos los días a las 00:00 horas.</p>
+                `
+            },
+            afiliados: {
+                titulo: "Divulgación y Política de Afiliados",
+                cuerpo: `
+                    <p><strong>1. Transparencia en Enlaces de Afiliados:</strong> ViraClip IA participa en programas de marketing de afiliación con plataformas externas de edición de vídeo (como Opus Clip, Submagic, HeyGen, entre otras).</p>
+                    <p><strong>2. Sin coste adicional para ti:</strong> Cuando haces clic en nuestros botones recomendados y contratas un servicio externo, podemos recibir una comisión sin que ello suponga ningún tipo de incremento en el precio final para ti.</p>
+                    <p><strong>3. Compromiso de Calidad:</strong> Solo recomendamos software y herramientas de Inteligencia Artificial que han sido probadas y validadas por nuestro equipo de creadores de contenido.</p>
+                `
+            }
+        };
+
+        const articulosDB = {
+            1: { 
+                cat: "Estrategia", 
+                tiempo: "8 Min de lectura", 
+                titulo: "Los 5 mejores ganchos iniciales para retener al usuario en los primeros 3 segundos", 
+                cuerpo: `
+                    <p><strong>1. El gancho visual de contraste repentino:</strong> Comienza tu vídeo con una imagen o cambio de plano drástico en los primeros 0.5 segundos para romper el patrón de scroll del usuario en TikTok y Reels.</p>
+                    <p><strong>2. La pregunta de dolor directo:</strong> Ataca directamente el problema de tu audiencia con frases como "¿Te pasa que tus vídeos no superan las 200 visitas?". Esto genera identificación inmediata.</p>
+                    <p><strong>3. La afirmación contraria a la intuición:</strong> Lanza un dato polémico o que contradiga el sentido común del nicho. Ejemplo: "Dejar de subir vídeos diarios hizo que mi cuenta creciera un 300%".</p>
+                    <p><strong>4. Mostrar el resultado final al principio:</strong> Haz un "flashforward" enseñando el pico de visualizaciones o el logro obtenido antes de explicar el paso a paso.</p>
+                    <p><strong>5. El bucle de curiosidad inquebrantable:</strong> Termina la introducción afirmando: "Y lo peor de todo es el error número 3 que comete el 90% de los creadores".</p>
+                ` 
+            },
+            2: { 
+                cat: "Monetización", 
+                tiempo: "10 Min de lectura", 
+                titulo: "Cómo ganar dinero recomendando apps de edición con marketing de afiliados", 
+                cuerpo: `
+                    <p><strong>1. Selección del software adecuado:</strong> Trabaja únicamente con herramientas de IA altamente demandadas en el sector (como Opus Clip, Submagic o HeyGen) que ofrezcan programas de afiliados sólidos y pagos recurrentes.</p>
+                    <p><strong>2. Optimización de la Biografía:</strong> Utiliza acortadores limpios y coloca tu enlace de afiliado principal de forma visible en tu perfil de TikTok, Instagram y YouTube Shorts.</p>
+                    <p><strong>3. Creación de tutoriales demostrativos:</strong> Graba vídeos mostrando pantalla de cómo una herramienta recorta un vídeo largo en segundos. El contenido de valor convierte hasta un 40% más que la simple recomendación publicitaria.</p>
+                    <p><strong>4. Retargeting y comunidad:</strong> Crea un canal de Telegram o una newsletter gratuita para captar leads interesados en edición y enviarles tus enlaces de afiliación acompañados de bonos exclusivos.</p>
+                ` 
+            },
+            3: { 
+                cat: "Automatización", 
+                tiempo: "12 Min de lectura", 
+                titulo: "Cómo montar un canal de TikTok 'Faceless' (sin mostrar la cara) al 100% con IA", 
+                cuerpo: `
+                    <p><strong>1. Elección de un nicho rentable:</strong> Los nichos con mayor CPM y retención son el desarrollo personal, las finanzas, la historia curiosa y el misterio/filosofía.</p>
+                    <p><strong>2. Generación de guiones automatizados:</strong> Utiliza modelos avanzados de lenguaje para redactar guiones virales de 150 palabras estructurados bajo la fórmula de gancho, desarrollo y llamada a la acción.</p>
+                    <p><strong>3. Síntesis de voz hiperrealista:</strong> Emplea plataformas de clonación de voz o locución neuronal para conseguir un tono profesional, pausado y magnético.</p>
+                    <p><strong>4. Edición masiva con subtítulos dinámicos:</strong> Automatiza la mezcla de clips de archivo de bancos gratuitos (Pexels, Pixabay) con subtítulos automáticos estilo Hormozi para asegurar una retención superior al 70%.</p>
+                ` 
+            }
+        };
+
+        const comunidadesPorPais = {
+            ES: ["Andalucía", "Aragón", "Asturias", "Baleares", "Canarias", "Cantabria", "Castilla-La Mancha", "Castilla y León", "Cataluña", "Comunidad Valenciana", "Extremadura", "Galicia", "Madrid", "Murcia", "Navarra", "País Vasco", "La Rioja"],
+            MX: ["Ciudad de México", "Jalisco", "Nuevo León", "Estado de México", "Puebla", "Yucatán", "Guanajuato", "Veracruz", "Baja California", "Chihuahua", "Otro Estado"],
+            AR: ["Buenos Aires", "CABA (Capital Federal)", "Córdoba", "Santa Fe", "Mendoza", "Tucumán", "Entre Ríos", "Salta", "Misiones", "Otra Provincia"],
+            CO: ["Bogotá D.C.", "Antioquia (Medellín)", "Valle del Cauca (Cali)", "Atlántico (Barranquilla)", "Cundinamarca", "Santander", "Bolívar", "Otra Región"],
+            CL: ["Región Metropolitana", "Valparaíso", "Biobío", "Antofagasta", "Maule", "La Araucanía", "Otra Región"],
+            PE: ["Lima", "Arequipa", "La Libertad", "Cusco", "Piura", "Junín", "Otra Región"],
+            UK: ["Inglaterra (London, Manchester...)", "Escocia (Scotland)", "Gales (Wales)", "Irlanda del Norte (Northern Ireland)"],
+            FR: ["Isla de Francia (París)", "Auvernia-Ródano-Alpes (Lyon)", "Provenza-Alpes-Costa Azul (Marsella)", "Occitania", "Alta Francia", "Gran Este", "Otra Región"],
+            DE: ["Renania del Norte-Westfalia", "Baviera (Bayern)", "Baden-Wurtemberg", "Berlín", "Baja Sajonia", "Hesse", "Otra Región"],
+            IT: ["Lombardía (Milán)", "Lacio (Roma)", "Véneto", "Piamonte", "Emilia-Romaña", "Toscana", "Otra Región"],
+            PT: ["Lisboa", "Oporto (Porto)", "Centro", "Alentejo", "Algarve", "Madeira / Azores"],
+            US: ["California", "Texas", "Florida", "New York", "Illinois", "Nevada", "Washington", "Otro Estado"],
+            otro: ["Internacional / Otro"]
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            verificarReseteoDiario();
+            actualizarContadorClips();
+            actualizarComunidades();
+            actualizarOpcionesClipsSegunPlan();
+            seleccionarTarjetaPlan(2);
+            
+            const simulador = document.getElementById('simuladorPlan');
+            if(simulador) simulador.value = planUsuario;
+        });
+
+        function cambiarPlanSimulado(nuevoPlan) {
+            planUsuario = nuevoPlan;
+            localStorage.setItem('planUsuario', planUsuario);
+            actualizarOpcionesClipsSegunPlan();
+            mostrarToast('Plan Actualizado', `Simulando plan: ${nuevoPlan.toUpperCase()}`, 'success');
+        }
+
+        // Muestra todas las opciones pero bloquea estrictamente las que el usuario no tiene compradas
+        function actualizarOpcionesClipsSegunPlan() {
+            const selectClips = document.getElementById('cantidadClips');
+            const badgePlan = document.getElementById('badgePlanActual');
+            if(!selectClips) return;
+
+            selectClips.innerHTML = '';
+            
+            if (planUsuario === 'gratis') {
+                badgePlan.innerText = sesionIniciada ? "Gratuito (Sesión Activa)" : "Gratuito (Invitado)";
+            } else if (planUsuario === 'standard') {
+                badgePlan.innerText = "Starter Standard (Hasta 30 clips)";
+            } else if (planUsuario === 'pro') {
+                badgePlan.innerText = "Viral Pro (Ilimitados)";
+            } else if (planUsuario === 'agency') {
+                badgePlan.innerText = "Agency Multi-cuenta (Máster Lote)";
+            }
+
+            const opcionesTotales = [
+                { val: 1, texto: "1 Clip Viral", minPlan: 'gratis' },
+                { val: 3, texto: "3 Clips Virales", minPlan: 'gratis' },
+                { val: 5, texto: "5 Clips Virales (Máx Gratis)", minPlan: 'gratis' },
+                { val: 10, texto: "10 Clips Virales", minPlan: 'standard' },
+                { val: 20, texto: "20 Clips Virales", minPlan: 'standard' },
+                { val: 30, texto: "30 Clips Virales (Límite Standard)", minPlan: 'standard' },
+                { val: 50, texto: "50 Clips Virales en lote (Pro / Agency)", minPlan: 'pro' },
+                { val: 100, texto: "100 Clips Virales masivo (Solo Agency)", minPlan: 'agency' }
+            ];
+
+            const nivelesPlan = { 'gratis': 0, 'standard': 1, 'pro': 2, 'agency': 3 };
+            const nivelUsuarioActual = nivelesPlan[planUsuario] || 0;
+
+            let primerValidoSeleccionado = false;
+
+            opcionesTotales.forEach(op => {
+                const optElement = document.createElement('option');
+                optElement.value = op.val;
+                const nivelRequerido = nivelesPlan[op.minPlan];
+
+                if (nivelUsuarioActual < nivelRequerido) {
+                    optElement.disabled = true;
+                    optElement.textContent = `🔒 ${op.texto} (Bloqueado - Requiere plan superior)`;
+                } else {
+                    optElement.textContent = op.texto;
+                    if (!primerValidoSeleccionado) {
+                        optElement.selected = true;
+                        primerValidoSeleccionado = true;
+                    }
+                }
+                selectClips.appendChild(optElement);
+            });
+        }
+
+        function verificarSeleccionClips(selectElement) {
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            if (selectedOption.disabled) {
+                mostrarToast('Plan Requerido', 'Esta opción está bloqueada para tu plan actual. Sube de categoría en la sección de planes.', 'vip');
+                document.getElementById('planes').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function abrirLegal(tipo) {
+            const info = legalDB[tipo];
+            if(!info) return;
+
+            document.getElementById('modalLegalTitulo').innerText = info.titulo;
+            document.getElementById('modalLegalCuerpo').innerHTML = info.cuerpo;
+
+            cerrarModales();
+            document.getElementById('modal-legal').classList.remove('hidden');
+        }
+
+        function abrirArticulo(id) {
+            const art = articulosDB[id];
+            if(!art) return;
+
+            document.getElementById('modalArticuloCat').innerText = art.cat;
+            document.getElementById('modalArticuloTiempo').innerText = art.tiempo;
+            document.getElementById('modalArticuloTitulo').innerText = art.titulo;
+            document.getElementById('modalArticuloCuerpo').innerHTML = art.cuerpo;
+
+            cerrarModales();
+            document.getElementById('modal-articulo').classList.remove('hidden');
+        }
+
+        function reclamarOfertaVIP() {
+            if (!sesionIniciada) {
+                mostrarToast('Inicia Sesión Requerida', 'Debes iniciar sesión para reclamar tus 3 horas gratis.', 'vip');
+                setTimeout(() => { abrirLogin(); }, 800);
+                return;
+            }
+            mostrarToast('¡Oferta Activada!', 'Tus 3 horas de procesamiento gratis se han aplicado a tu cuenta.', 'success');
+        }
+
+        function actualizarComunidades() {
+            const paisSelect = document.getElementById('regPais');
+            const comunidadSelect = document.getElementById('regComunidad');
+            const labelComunidad = document.getElementById('labelComunidad');
+            const regiones = comunidadesPorPais[paisSelect.value] || ["Otra Región"];
+
+            labelComunidad.innerText = (paisSelect.value === 'US' || paisSelect.value === 'DE') ? "Estado / Región" : "Comunidad Autónoma / Región";
+            comunidadSelect.innerHTML = '';
+            regiones.forEach(región => {
+                const option = document.createElement('option');
+                option.value = región;
+                option.textContent = región;
+                comunidadSelect.appendChild(option);
+            });
+        }
+
+        function actualizarContadorClips() {
+            verificarReseteoDiario();
+            clipsUsadosHoy = parseInt(localStorage.getItem('clipsUsadosHoy')) || 0;
+            const restantes = Math.max(0, limiteDiarioGratis - clipsUsadosHoy);
+            const spanDisp = document.getElementById('clipsDisponibles');
+            if(spanDisp) spanDisp.innerText = restantes;
+        }
+
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+
+        function mostrarToast(titulo, mensaje, tipo = 'success') {
+            const toast = document.getElementById('toast');
+            const toastTitle = document.getElementById('toast-title');
+            const toastMsg = document.getElementById('toast-msg');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastTitle.innerText = titulo;
+            toastMsg.innerText = mensaje;
+            toastIcon.innerText = (tipo === 'success') ? '✓' : '★';
+            toastIcon.className = (tipo === 'success') ? 'text-emerald-400 text-xl font-bold' : 'text-amber-400 text-xl font-bold';
+
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => { toast.classList.add('translate-y-32', 'opacity-0'); }, 4000);
+        }
+
+        function abrirLogin() { cerrarModales(); document.getElementById('modal-login').classList.remove('hidden'); }
+        function abrirRegistro() { cerrarModales(); document.getElementById('modal-registro').classList.remove('hidden'); }
+        function abrirRecuperarPassword() { cerrarModales(); document.getElementById('modal-recuperar').classList.remove('hidden'); }
+
+        function cerrarModales() {
+            document.getElementById('modal-login').classList.add('hidden');
+            document.getElementById('modal-registro').classList.add('hidden');
+            document.getElementById('modal-recuperar').classList.add('hidden');
+            document.getElementById('modal-pago').classList.add('hidden');
+            document.getElementById('modal-articulo').classList.add('hidden');
+            document.getElementById('modal-legal').classList.add('hidden');
+        }
+
+        function manejarLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            sesionIniciada = true;
+            localStorage.setItem('sesionIniciada', 'true');
+            actualizarOpcionesClipsSegunPlan();
+            cerrarModales();
+            mostrarToast('¡Bienvenido de nuevo!', `Sesión iniciada con ${email}.`);
+        }
+
+        function enviarCorreoRecuperacion(e) {
+            e.preventDefault();
+            const email = document.getElementById('recuperarEmail').value;
+            cerrarModales();
+            mostrarToast('Correo enviado', `Hemos enviado un enlace de recuperación a ${email}.`, 'success');
+        }
+
+        function manejarRegistro(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('regNombre').value;
+            sesionIniciada = true;
+            localStorage.setItem('sesionIniciada', 'true');
+            actualizarOpcionesClipsSegunPlan();
+            cerrarModales();
+            mostrarToast('¡Cuenta creada!', `¡Bienvenido a ViraClip, ${nombre}!`);
+        }
+
+        function seleccionarTarjetaPlan(numero) {
+            for(let i = 1; i <= 3; i++) {
+                const tarjeta = document.getElementById(`tarjeta-${i}`);
+                const badge = document.getElementById(`badge-${i}`);
+                const boton = document.getElementById(`btn-card-${i}`);
+
+                if(i === numero) {
+                    tarjeta.className = "plan-card cursor-pointer bg-gradient-to-b from-purple-950/40 via-slate-900/80 to-slate-900/90 backdrop-blur-xl border-2 border-brand-500/80 rounded-3xl p-8 flex flex-col justify-between shadow-2xl relative transform md:-translate-y-4 group transition-all";
+                    badge.className = "absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-brand-600 to-pink-500 text-white text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-full shadow-lg tracking-wider transition-all";
+                    badge.innerText = "🔥 Más Popular • Activo";
+                    boton.className = "w-full py-4 bg-gradient-to-r from-brand-600 to-pink-600 hover:from-brand-500 hover:to-pink-500 text-white font-bold rounded-2xl text-xs transition-all shadow-xl shadow-brand-600/40";
+                } else {
+                    tarjeta.className = "plan-card cursor-pointer bg-gradient-to-b from-slate-900/90 via-slate-900/80 to-slate-950 backdrop-blur-xl border-2 border-slate-700/80 rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 shadow-2xl relative group";
+                    badge.className = "absolute -top-4 left-1/2 transform -translate-x-1/2 bg-slate-800 text-slate-300 text-[10px] font-extrabold uppercase px-4 py-1.5 rounded-full shadow-lg tracking-wider transition-all";
+                    badge.innerText = i === 1 ? "📦 Plan Estándar" : "👑 Plan Agencias";
+                    boton.className = "w-full py-4 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-2xl text-xs transition-all shadow-lg border border-slate-700/50";
+                }
+            }
+        }
+
+        function seleccionarPlan(nombrePlan, numeroTarjeta) {
+            seleccionarTarjetaPlan(numeroTarjeta);
+            let precioTexto = nombrePlan === 'Viral Pro' ? "$29 / mes" : (nombrePlan.includes('Standard') ? "$15 / mes" : "$79 / mes");
+            document.getElementById('pagoTituloPlan').innerText = `Suscribirse al ${nombrePlan}`;
+            document.getElementById('pagoPrecioPlan').innerText = precioTexto;
+            document.getElementById('modal-pago').classList.remove('hidden');
+        }
+
+        function completarPago(e) {
+            e.preventDefault();
+            cerrarModales();
+            sesionIniciada = true;
+            
+            if(e.submitter && e.submitter.id === 'btn-card-1') {
+                planUsuario = 'standard';
+            } else if(e.submitter && e.submitter.id === 'btn-card-3') {
+                planUsuario = 'agency';
+            } else {
+                planUsuario = 'pro';
+            }
+
+            localStorage.setItem('sesionIniciada', 'true');
+            localStorage.setItem('planUsuario', planUsuario);
+            actualizarOpcionesClipsSegunPlan();
+            
+            const simulador = document.getElementById('simuladorPlan');
+            if(simulador) simulador.value = planUsuario;
+
+            mostrarToast('¡Pago Exitoso!', '¡Suscripción activada con éxito!', 'success');
+        }
+
+        function procesarDirectoAI(e) {
+            e.preventDefault();
+            verificarReseteoDiario();
+            const url = document.getElementById('urlDirecto').value;
+            const selectClips = document.getElementById('cantidadClips');
+            const selectedOption = selectClips.options[selectClips.selectedIndex];
+
+            if (selectedOption.disabled) {
+                mostrarToast('Plan Requerido', 'No puedes generar esta cantidad de clips porque requiere un plan superior.', 'vip');
+                return;
+            }
+
+            const cantidad = parseInt(selectClips.value);
+            if(!url) return;
+
+            if (planUsuario === 'gratis' && (clipsUsadosHoy + cantidad > limiteDiarioGratis)) {
+                mostrarToast('Límite Diario Superado', `Has alcanzado tus ${limiteDiarioGratis} clips gratuitos de hoy. ¡Se resetean a medianoche o pásate a un plan superior!`, 'vip');
+                document.getElementById('planes').scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            mostrarToast('Procesando Directo', `Analizando vídeo y generando ${cantidad} clips virales con IA...`, 'vip');
+
+            setTimeout(() => {
+                if(planUsuario === 'gratis') {
+                    clipsUsadosHoy += cantidad;
+                    localStorage.setItem('clipsUsadosHoy', clipsUsadosHoy);
+                    actualizarContadorClips();
+                }
+
+                const contenedorResultado = document.getElementById('resultadoGenerador');
+                const listaClips = document.getElementById('listaClipsGenerados');
+                const badgeCount = document.getElementById('badgeClipsCount');
+                
+                contenedorResultado.classList.remove('hidden');
+                listaClips.innerHTML = '';
+                badgeCount.innerText = `${cantidad} Clips Listos`;
+
+                for(let i = 1; i <= Math.min(cantidad, 4); i++) {
+                    listaClips.innerHTML += `
+                        <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-bold text-white block">Clip #${i} Viral (Score: 9${i}%)</span>
+                                <span class="text-[10px] text-slate-400">Duración: 45s • Subtítulos dinámicos</span>
+                            </div>
+                            <button onclick="mostrarToast('Descargando', 'Preparando archivo MP4 del Clip #${i}')" class="px-3 py-1.5 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold rounded-lg transition-all">Descargar</button>
+                        </div>
+                    `;
+                }
+                mostrarToast('¡Éxito!', `Se han generado ${cantidad} clips virales correctamente.`, 'success');
+            }, 2000);
+        }
+
+        function cambiarPeriodo(periodo) {
+            periodoActual = periodo;
+            const btn1Mes = document.getElementById('btn-1mes');
+            const btn3Meses = document.getElementById('btn-3meses');
+            const btn1Ano = document.getElementById('btn-1ano');
+            const preciosStarter = document.querySelector('.precio-starter');
+            const preciosPro = document.querySelector('.precio-pro');
+            const preciosAgency = document.querySelector('.precio-agency');
+            const periodosTexto = document.querySelectorAll('.periodo-texto');
+            const avisoStarter = document.getElementById('promo-aviso-starter');
+
+            [btn1Mes, btn3Meses, btn1Ano].forEach(btn => btn.className = 'px-5 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white');
+
+            if(periodo === '1mes') {
+                btn1Mes.className = 'px-5 py-2.5 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-brand-600 to-purple-600 text-white shadow-lg';
+                preciosStarter.innerText = '$15'; preciosPro.innerText = '$29'; preciosAgency.innerText = '$79';
+                periodosTexto.forEach(el => el.innerText = ' / mes');
+                if(avisoStarter) avisoStarter.classList.add('hidden');
+            } else if(periodo === '3meses') {
+                btn3Meses.className = 'px-5 py-2.5 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-brand-600 to-purple-600 text-white shadow-lg';
+                preciosStarter.innerText = '$38'; preciosPro.innerText = '$74'; preciosAgency.innerText = '$201';
+                periodosTexto.forEach(el => el.innerText = ' / 3 meses');
+                if(avisoStarter) { avisoStarter.innerText = '✨ ¡Aplicado 15% de descuento trimestral!'; avisoStarter.classList.remove('hidden'); }
+            } else if(periodo === '1ano') {
+                btn1Ano.className = 'px-5 py-2.5 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-brand-600 to-purple-600 text-white shadow-lg';
+                preciosStarter.innerText = '$126'; preciosPro.innerText = '$243'; preciosAgency.innerText = '$663';
+                periodosTexto.forEach(el => el.innerText = ' / año');
+                if(avisoStarter) { avisoStarter.innerText = '✨ ¡Aplicado 30% de descuento anual!'; avisoStarter.classList.remove('hidden'); }
+            }
+        }
+
+        function filtrarCategoria(categoria, btnElement) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.className = 'filter-btn px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition-all');
+            btnElement.className = 'filter-btn px-4 py-2.5 rounded-xl text-xs font-semibold bg-brand-600 text-white transition-all shadow-md shadow-brand-600/20';
+
+            document.querySelectorAll('.card-item').forEach(card => {
+                card.style.display = (categoria === 'todos' || card.getAttribute('data-category') === categoria) ? 'flex' : 'none';
+            });
+        }
+
+        function abrirAfiliado(nombre, url) {
+            mostrarToast('Redirigiendo', `Abriendo la web oficial de ${nombre}...`);
+            setTimeout(() => { window.open(url, '_blank'); }, 800);
+        }
+
+        function suscribirNewsletter(e) {
+            e.preventDefault();
+            const email = document.getElementById('emailInput');
+            if(email && email.value) {
+                mostrarToast('¡Suscripción Exitosa!', `Hemos enviado la guía de ganchos virales a ${email.value}`);
+                email.value = '';
+            }
+        }
+
+        function enviarContacto(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('nombreContacto').value;
+            mostrarToast('¡Mensaje Enviado!', `Gracias ${nombre}, te responderemos en breve.`);
+            document.getElementById('nombreContacto').value = '';
+            document.getElementById('emailContacto').value = '';
+            document.getElementById('mensajeContacto').value = '';
+        }
+    </script>
+</body>
+</html>
